@@ -32,3 +32,9 @@ class ObservationFactory:
             raise ValueError('Any observation variable cannot be None')
 
         return Observation(x, y, category_id)
+
+    @staticmethod
+    def create_observation(values):
+        if len(values) != 3:
+            raise ValueError('Invalid observation structure')
+        return ObservationFactory.create_observation(values[0], values[1], values[2])
