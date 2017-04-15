@@ -11,7 +11,7 @@ class FileDataStorage(IDataStorage):
 
     def __init__(self, file):
         if not os.path.exists(file):
-            raise FileNotFoundError
+            raise FileNotFoundError('File ' + file + ' does not exist')
         self.storage = super()._storage
         self.load_storage(file)
 
@@ -20,7 +20,8 @@ class FileDataStorage(IDataStorage):
             for line in f:
                 values = line.split(self.COMMA_SEPARATOR)
                 try:
-                    ObservationFactory.create_observation(values)
+                    observation = ObservationFactory.create_observation_from_tuple(values)
+                    self.add_value(observation)
                 except ValueError:
                     self.clear_storage()
                     raise ValueError('File is corrupted')

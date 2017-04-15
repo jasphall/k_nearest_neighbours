@@ -1,9 +1,11 @@
-from PyQt5.QtGui import QImage, qRgb, QPainter, QColor, QPen
+from PyQt5.QtGui import QImage, qRgb, QPainter, QPen, QMouseEvent
 from PyQt5.QtWidgets import QWidget
+
+from infrastructure.events.events import Events
 
 
 class AppCanvas(QWidget):
-    """ Widget Canvasa do rysowania """
+    """ Canvas widget for drawing """
 
     def __init__(self, width, height, parent=None):
         super().__init__(parent)
@@ -18,6 +20,14 @@ class AppCanvas(QWidget):
         painter = QPainter(self)
         painter.drawImage(0, 0, self.img)
 
+    def mousePressEvent(self, event: QMouseEvent):
+        """ Mouse press event handler """
+        Events.point_added.emit((event.x(), event.y()))
+
+    def draw_observations(self, values, color):
+        self.img.draw_points(values, color.to_qcolor())
+        self.repaint()
+
 
 class AppCanvasImage(QImage):
 
@@ -25,3 +35,14 @@ class AppCanvasImage(QImage):
         super().__init__(width, height, format)
         self.fill(bg_color)
 
+    def draw_point(self, x, y, color):
+        painter = QPainter(self)
+        pen = QPen(color)
+        pen.setWidth(5)
+        painter.setPen(pen)
+
+        painter.drawPoint(x, y)
+
+    def draw_points(self, points, color):
+        for p in points:
+            self.draw_point(p.x, p.y, color)

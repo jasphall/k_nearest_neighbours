@@ -1,27 +1,32 @@
 from PyQt5 import QtCore
-from PyQt5.QtWidgets import QHBoxLayout, QFileDialog
+from PyQt5.QtWidgets import QHBoxLayout
 from PyQt5.QtWidgets import QVBoxLayout
 from PyQt5.QtWidgets import QWidget, QFormLayout
 
 from domain.knn.properties.metric import Metric
 from domain.knn.properties.vote import Vote
+from infrastructure.events.events import Events
+from infrastructure.events.handlers.events_handler import EventsHandler
 from infrastructure.gui.canvas.appcanvas import AppCanvas
+from infrastructure.gui.color import Color
 from infrastructure.gui.elements.gui_element_creator import GuiElementCreator
 from infrastructure.utils.collection_utils import CollectionUtils
 
 
 class AppWindow(QWidget):
-    """ Główne okno aplikacji """
+    """ Main app window """
 
     WIDTH = 1100
     HEIGHT = 800
-    WINDOW_TITLE = 'k Neirest Neighours'
+    WINDOW_TITLE = 'k Nearest Neighours'
 
     CANVAS_WIDTH = 1000
     CANVAS_HEIGHT = 800
 
-    def __init__(self, parent=None):
+    def __init__(self, observation_repository, parent=None):
         super().__init__(parent)
+        self.observation_repository = observation_repository
+        self.events_handler = EventsHandler()
 
         self.layout = None
         self.left_layout = None
@@ -31,6 +36,7 @@ class AppWindow(QWidget):
         self.resize(self.WIDTH, self.HEIGHT)
         self.setWindowTitle(self.WINDOW_TITLE)
         self.configure_gui()
+        self.bind_signals_and_slots()
 
     def configure_gui(self):
         """ GUI layouts configuration """
@@ -80,7 +86,13 @@ class AppWindow(QWidget):
         elements = [title_label, load_data_button, k_combobox, metric_combobox, vote_combobox]
         return CollectionUtils.unwrap_elements(elements)
 
+    def bind_signals_and_slots(self):
+        """ Binding pyQt signals with slots """
+        Events.point_added.event.connect(self.events_handler.point_added)
+
     def load_button_clicked(self):
-        """ Event handler for load button click action """
-        filename = QFileDialog.getOpenFileName(self, 'Wczytaj plik', '/')
-        print(filename)
+        """ Load button click event handler """
+        categories = self.observation_repository.find_different_categories_num()
+        for category_id in categories:
+            category_observations = self.observation_repository.find_all_in_given_category(category_id)
+            self.canvas.draw_observations(category_observations, Color(category_id))
