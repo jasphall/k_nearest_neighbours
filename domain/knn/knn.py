@@ -1,13 +1,24 @@
+from domain.knn.properties.metric import Metric
+from domain.knn.properties.vote import Vote
 from domain.knn.utils.alg_utils import AlghoritmUtils
 from domain.shared.observation_repository import ObservationRepository
 
 
 class KNNAlghoritm:
 
-    def __init__(self, data_storage, k, metric, vote):
+    def __init__(self, data_storage):
         self.observation_repository = ObservationRepository(data_storage)
+        self.k = 1
+        self.metric = Metric.EUCLIDEAN
+        self.vote = Vote.SIMPLE
+
+    def setup_k(self, k):
         self.k = k
+
+    def setup_metric(self, metric):
         self.metric = metric
+
+    def setup_vote(self, vote):
         self.vote = vote
 
     def classify(self, observation):

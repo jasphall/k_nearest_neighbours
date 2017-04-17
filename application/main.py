@@ -2,6 +2,7 @@ import sys
 
 from PyQt5.QtWidgets import QApplication
 
+from domain.knn.knn import KNNAlghoritm
 from domain.shared.observation_repository import ObservationRepository
 from domain.shared.storage.file_data_storage import FileDataStorage
 from infrastructure.events.handlers.events_handler import EventsHandler
@@ -13,7 +14,8 @@ if __name__ == '__main__':
     # SampleDataGenerator().generate_and_export()
     data_storage = FileDataStorage('../sample_data.txt')
     observation_repository = ObservationRepository(data_storage)
-    events_handler = EventsHandler(data_storage)
+    knn = KNNAlghoritm(data_storage)
+    events_handler = EventsHandler(knn)
     window = AppWindow(observation_repository, events_handler)
     window.show()
 

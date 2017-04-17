@@ -82,6 +82,12 @@ class AppWindow(QWidget):
         load_data_button = GuiElementCreator.create_button('Wczytaj dane')
 
         load_data_button.clicked.connect(self.load_button_clicked)
+        k_combobox[1].currentIndexChanged.connect(
+            lambda: self.knn_property_changed('k', k_combobox[1].currentIndex()))
+        metric_combobox[1].currentIndexChanged.connect(
+            lambda: self.knn_property_changed('metric', metric_combobox[1].currentIndex()))
+        vote_combobox[1].currentIndexChanged.connect(
+            lambda: self.knn_property_changed('vote', vote_combobox[1].currentIndex()))
 
         elements = [title_label, load_data_button, k_combobox, metric_combobox, vote_combobox]
         return CollectionUtils.unwrap_elements(elements)
@@ -90,6 +96,7 @@ class AppWindow(QWidget):
         """ Binding pyQt signals with slots """
         Events.point_added.event.connect(self.events_handler.point_added)
         Events.point_classified.event.connect(self.canvas.point_classified_and_ready_to_draw)
+        Events.knn_property_changed.event.connect(self.events_handler.knn_property_changed)
 
     def load_button_clicked(self):
         """ Load button click event handler """
@@ -97,3 +104,21 @@ class AppWindow(QWidget):
         for category_id in categories:
             category_observations = self.observation_repository.find_all_in_given_category(category_id)
             self.canvas.draw_observations(category_observations, Color(category_id))
+
+    def knn_property_changed(self, name, value):
+        value = int(value)
+
+        if name == 'k':
+            value += 1
+        if name == 'metric':
+            if value == 0:
+                value = Metric.EUCLIDEAN
+            else:
+                value = Metric.TAXICAB
+        elif name == 'vote':
+            if value == 0:
+                value = Vote.SIMPLE
+            else:
+                value = Vote.REVERSE_DISTANCE_SQUARE
+
+        Events.knn_property_changed.emit((name, value))
