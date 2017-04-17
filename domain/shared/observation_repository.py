@@ -4,6 +4,9 @@ from abc import abstractmethod
 class IObservationRepository(object):
     """ Observation repository class """
 
+    """ Find all available observations """
+    def find_all(self): raise NotImplementedError
+
     """ Find number of different categories """
     def find_different_categories_num(self): raise NotImplementedError
 
@@ -21,11 +24,14 @@ class ObservationRepository(IObservationRepository):
     def __init__(self, storage):
         self.storage = storage
 
+    def find_all(self):
+        return self.storage.get_values()
+
     def find_different_categories_num(self):
-        return set(map(lambda o: o.category_id, self.storage.get_values()))
+        return set(map(lambda o: int(o.category_id), self.storage.get_values()))
 
     def find_all_in_given_category(self, category_id):
-        return list(filter(lambda o: o.category_id == category_id, self.storage.get_values()))
+        return list(filter(lambda o: int(o.category_id) == category_id, self.storage.get_values()))
 
     def find_by_values(self, x, y):
         pass

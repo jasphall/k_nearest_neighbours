@@ -4,10 +4,10 @@ class Observation(object):
     def __init__(self, x, y, category_id):
         self.x = int(x)
         self.y = int(y)
-        self.category_id = int(category_id)
+        self.category_id = category_id
 
-    def change_category(self, category_id):
-        """ Observation category can change (it depends on alghoritm configuration) """
+    def classify(self, category_id):
+        """ Observation category classification can change (it depends on alghoritm configuration) """
         self.category_id = category_id
 
     def change_data(self, x, y):
@@ -31,10 +31,13 @@ class ObservationFactory:
         if x is None or y is None:
             raise ValueError('Any observation variable cannot be None')
 
-        return Observation(x, y, category_id)
+        if category_id is not None:
+            category_id = int(category_id)
+
+        return Observation(int(x), int(y), category_id)
 
     @staticmethod
     def create_observation_from_tuple(values):
         if len(values) != 3:
             raise ValueError('Invalid observation structure')
-        return ObservationFactory.create_observation(values[0], values[1], values[2])
+        return ObservationFactory.create_observation(values[0], values[1], int(values[2]))

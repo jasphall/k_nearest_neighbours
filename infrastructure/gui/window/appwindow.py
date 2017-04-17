@@ -23,10 +23,10 @@ class AppWindow(QWidget):
     CANVAS_WIDTH = 1000
     CANVAS_HEIGHT = 800
 
-    def __init__(self, observation_repository, parent=None):
+    def __init__(self, observation_repository, events_handler, parent=None):
         super().__init__(parent)
         self.observation_repository = observation_repository
-        self.events_handler = EventsHandler()
+        self.events_handler = events_handler
 
         self.layout = None
         self.left_layout = None
@@ -89,6 +89,7 @@ class AppWindow(QWidget):
     def bind_signals_and_slots(self):
         """ Binding pyQt signals with slots """
         Events.point_added.event.connect(self.events_handler.point_added)
+        Events.point_classified.event.connect(self.canvas.point_classified_and_ready_to_draw)
 
     def load_button_clicked(self):
         """ Load button click event handler """

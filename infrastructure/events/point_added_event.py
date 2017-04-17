@@ -8,4 +8,3 @@ class PointAddedEvent(Event):
 
     def emit(self, values):
         self.event.emit(values)
-        print('Signal PointAddedEvent emitted with values ' + str(values))

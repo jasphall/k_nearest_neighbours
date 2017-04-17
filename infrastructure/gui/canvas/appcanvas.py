@@ -1,7 +1,10 @@
+from PyQt5.QtCore import pyqtSlot
 from PyQt5.QtGui import QImage, qRgb, QPainter, QPen, QMouseEvent
 from PyQt5.QtWidgets import QWidget
 
+from domain.shared.observation import Observation
 from infrastructure.events.events import Events
+from infrastructure.gui.color import Color
 
 
 class AppCanvas(QWidget):
@@ -27,6 +30,10 @@ class AppCanvas(QWidget):
     def draw_observations(self, values, color):
         self.img.draw_points(values, color.to_qcolor())
         self.repaint()
+
+    @pyqtSlot(Observation)
+    def point_classified_and_ready_to_draw(self, observation):
+        self.draw_observations([observation], Color(observation.category_id))
 
 
 class AppCanvasImage(QImage):
