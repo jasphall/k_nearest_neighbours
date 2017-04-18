@@ -25,9 +25,9 @@ class AlghoritmUtils:
         return 1.0 * value * (max - min) + min
 
     @staticmethod
-    def remove_most_distanced_neighbour(neighbours):
+    def remove_most_distanced_neighbour(neighbours, k):
         """ Removes neighbour with biggest distance from current neighbours list """
-        if len(neighbours) <= 0:
+        if len(neighbours) < k:
             return
 
         neighbour_to_delete = neighbours[0]

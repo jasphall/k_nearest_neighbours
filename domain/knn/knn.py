@@ -25,7 +25,7 @@ class KNNAlghoritm:
         k_nearest_neighbours = self.find_k_nearest_neighbours(observation)
 
         if len(k_nearest_neighbours) != self.k:
-            raise ValueError('Method find_k_nearest_neighbours does not work good')
+            raise ArithmeticError('Method find_k_nearest_neighbours does not work good')
 
         if self.k == 1:
             return k_nearest_neighbours[0].category_id
@@ -33,8 +33,9 @@ class KNNAlghoritm:
             neighbours_category_grouped = self.group_neighbours_by_category(k_nearest_neighbours)
             pass
         elif self.k % 2 == 1:
-            # argmax
-            pass
+            neighbours_category_grouped = self.group_neighbours_by_category(k_nearest_neighbours)
+            max_key = self.find_dominating_category_in_neighbourhood(neighbours_category_grouped)
+            return max_key
 
     def find_k_nearest_neighbours(self, observation):
         """ Finds k nearest neighbours of given observation in specific metric """
@@ -62,7 +63,7 @@ class KNNAlghoritm:
 
     def update_neighbours(self, observation, distance, neighbours):
         """ Removes most distanced neighbour in current list and inserts new observation into neighbours list """
-        AlghoritmUtils.remove_most_distanced_neighbour(neighbours)
+        AlghoritmUtils.remove_most_distanced_neighbour(neighbours, self.k)
         neighbours.append({'observation': observation, 'distance': distance})
 
     def group_neighbours_by_category(self, neighbours):
@@ -74,3 +75,13 @@ class KNNAlghoritm:
             d[key].append(neighbour)
 
         return d
+
+    def find_dominating_category_in_neighbourhood(self, grouped_neighbours):
+        min_key = next (iter (grouped_neighbours))
+        min_value = next (iter (grouped_neighbours.values()))
+        for category_id in grouped_neighbours:
+            if len(grouped_neighbours[category_id]) > len(min_value):
+                min_key = category_id
+                min_value = grouped_neighbours[category_id]
+
+        return min_key

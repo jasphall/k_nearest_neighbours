@@ -34,6 +34,7 @@ class AppCanvas(QWidget):
     @pyqtSlot(Observation)
     def point_classified_and_ready_to_draw(self, observation):
         self.draw_observations([observation], Color(observation.category_id))
+        print('PointClassifiedEvent reveived')
 
 
 class AppCanvasImage(QImage):

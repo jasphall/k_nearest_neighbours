@@ -9,3 +9,4 @@ class PointClassifiedEvent(Event):
 
     def emit(self, observation):
         self.event.emit(observation)
+        print('PointClassifiedEvent emitted')
