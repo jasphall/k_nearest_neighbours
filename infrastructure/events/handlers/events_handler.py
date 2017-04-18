@@ -1,6 +1,7 @@
 from PyQt5.QtCore import pyqtSlot, QObject
 
 from domain.shared.observation import ObservationFactory
+from domain.shared.observation_container import ObservationContainer
 from infrastructure.events.events import Events
 
 
@@ -14,10 +15,10 @@ class EventsHandler(QObject):
     @pyqtSlot(tuple)
     def point_added(self, values):
         observation = ObservationFactory.create_observation(values[0], values[1])
-        classified_category_id = self.knn.classify(observation)
+        classified_category_id, neighbours = self.knn.classify(observation)
         observation.classify(classified_category_id)
 
-        Events.point_classified.emit(observation)
+        Events.point_classified.emit(ObservationContainer(observation, neighbours))
 
     @pyqtSlot(tuple)
     def knn_property_changed(self, data):

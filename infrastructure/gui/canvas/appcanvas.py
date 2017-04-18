@@ -3,6 +3,7 @@ from PyQt5.QtGui import QImage, qRgb, QPainter, QPen, QMouseEvent
 from PyQt5.QtWidgets import QWidget
 
 from domain.shared.observation import Observation
+from domain.shared.observation_container import ObservationContainer
 from infrastructure.events.events import Events
 from infrastructure.gui.color import Color
 
@@ -27,16 +28,20 @@ class AppCanvas(QWidget):
         """ Mouse press event handler """
         Events.point_added.emit((event.x(), event.y()))
 
-    def draw_observations(self, values, color, circle=False):
-        if circle is False:
+    def draw_observations(self, values, color, circle_shape=False):
+        if circle_shape is False:
             self.img.draw_points(values, color.to_qcolor())
         else:
             self.img.draw_circle_points(values, color.to_qcolor())
         self.repaint()
 
-    @pyqtSlot(Observation)
-    def point_classified_and_ready_to_draw(self, observation):
+    @pyqtSlot(ObservationContainer)
+    def point_classified_and_ready_to_draw(self, observation_container):
+        observation = observation_container.observation
+        neighbours = observation_container.neighbours
+
         self.draw_observations([observation], Color(observation.category_id))
+        self.draw_observations(neighbours, Color.WHITE, circle_shape=True)
         print('PointClassifiedEvent reveived')
 
 

@@ -29,19 +29,19 @@ class KNNAlghoritm:
             raise ArithmeticError('Method find_k_nearest_neighbours does not work good')
 
         if self.k == 1:
-            return k_nearest_neighbours[0].category_id
+            return k_nearest_neighbours[0].category_id, k_nearest_neighbours
         elif self.k % 2 == 0:
             neighbours_category_grouped = self.group_neighbours_by_category(k_nearest_neighbours)
             if len(neighbours_category_grouped) > 1 and self.voting_tie(neighbours_category_grouped):
                 ''' Tie occured '''
-                return self.handle_tie_situation(observation, neighbours_category_grouped)
+                return self.handle_tie_situation(observation, neighbours_category_grouped), k_nearest_neighbours
             else:
                 max_key = self.find_dominating_category_in_neighbourhood(neighbours_category_grouped)
-                return max_key
+                return max_key, k_nearest_neighbours
         elif self.k % 2 == 1:
             neighbours_category_grouped = self.group_neighbours_by_category(k_nearest_neighbours)
             max_key = self.find_dominating_category_in_neighbourhood(neighbours_category_grouped)
-            return max_key
+            return max_key, k_nearest_neighbours
 
     def find_k_nearest_neighbours(self, observation, observations=None, k=None):
         """ Finds k nearest neighbours of given observation in specific metric """

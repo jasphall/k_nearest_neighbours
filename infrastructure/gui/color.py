@@ -21,4 +21,4 @@ class Color(Enum):
         elif self.name == 'YELLOW':
             return QColor(255, 255, 0)
         elif self.name == 'WHITE':
-            return QColor(0, 0, 0)
+            return QColor(255, 255, 255)
