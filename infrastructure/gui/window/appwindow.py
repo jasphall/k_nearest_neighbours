@@ -103,7 +103,7 @@ class AppWindow(QWidget):
         categories = self.observation_repository.find_different_categories_num()
         for category_id in categories:
             category_observations = self.observation_repository.find_all_in_given_category(category_id)
-            self.canvas.draw_observations(category_observations, Color(category_id))
+            self.canvas.draw_observations(category_observations, Color(category_id), True)
 
     def knn_property_changed(self, name, value):
         value = int(value)

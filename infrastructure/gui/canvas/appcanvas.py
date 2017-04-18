@@ -27,8 +27,11 @@ class AppCanvas(QWidget):
         """ Mouse press event handler """
         Events.point_added.emit((event.x(), event.y()))
 
-    def draw_observations(self, values, color):
-        self.img.draw_points(values, color.to_qcolor())
+    def draw_observations(self, values, color, circle=False):
+        if circle is False:
+            self.img.draw_points(values, color.to_qcolor())
+        else:
+            self.img.draw_circle_points(values, color.to_qcolor())
         self.repaint()
 
     @pyqtSlot(Observation)
@@ -54,3 +57,15 @@ class AppCanvasImage(QImage):
     def draw_points(self, points, color):
         for p in points:
             self.draw_point(p.x, p.y, color)
+
+    def draw_circle_point(self, x, y, color):
+        painter = QPainter(self)
+        pen = QPen(color)
+        pen.setWidth(5)
+        painter.setPen(pen)
+
+        painter.drawEllipse(x, y, 5, 5)
+
+    def draw_circle_points(self, points, color):
+        for p in points:
+            self.draw_circle_point(p.x, p.y, color)
