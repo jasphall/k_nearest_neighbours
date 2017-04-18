@@ -39,3 +39,14 @@ class FileDataStorage(IDataStorage):
 
     def clear_storage(self):
         self.storage.clear()
+
+    def calculate_categories_countability(self):
+        """ Groups entries by category_id ({category_id: len of values}) """
+        d = {}
+        for neighbour in self.get_values():
+            key = neighbour.category_id
+            if key not in d:
+                d[key] = 0
+            d[key] += 1
+
+        return d
