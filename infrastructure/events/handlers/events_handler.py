@@ -1,6 +1,6 @@
 from PyQt5.QtCore import pyqtSlot, QObject
 
-from domain.shared.observation import ObservationFactory
+from domain.shared.observation import ObservationFactory, Observation
 from domain.shared.observation_container import ObservationContainer
 from infrastructure.events.events import Events
 
@@ -12,9 +12,8 @@ class EventsHandler(QObject):
         super().__init__()
         self.knn = knn
 
-    @pyqtSlot(tuple)
-    def point_added(self, values):
-        observation = ObservationFactory.create_observation(values[0], values[1])
+    @pyqtSlot(Observation)
+    def point_added(self, observation):
         classified_category_id, neighbours = self.knn.classify(observation)
         observation.classify(classified_category_id)
 

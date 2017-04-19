@@ -80,8 +80,10 @@ class AppWindow(QWidget):
         metric_combobox = GuiElementCreator.create_combobox_with_label(Metric.get_as_tuple(), 'Wybierz metryke')
         vote_combobox = GuiElementCreator.create_combobox_with_label(Vote.get_as_tuple(), 'Wybierz rodzaj głosowania')
         load_data_button = GuiElementCreator.create_button('Wczytaj dane')
+        clear_canvas_button = GuiElementCreator.create_button('Reset')
 
         load_data_button.clicked.connect(self.load_button_clicked)
+        clear_canvas_button.clicked.connect(self.clear_button_clicked)
         k_combobox[1].currentIndexChanged.connect(
             lambda: self.knn_property_changed('k', k_combobox[1].currentIndex()))
         metric_combobox[1].currentIndexChanged.connect(
@@ -89,7 +91,7 @@ class AppWindow(QWidget):
         vote_combobox[1].currentIndexChanged.connect(
             lambda: self.knn_property_changed('vote', vote_combobox[1].currentIndex()))
 
-        elements = [title_label, load_data_button, k_combobox, metric_combobox, vote_combobox]
+        elements = [title_label, load_data_button, k_combobox, metric_combobox, vote_combobox, clear_canvas_button]
         return CollectionUtils.unwrap_elements(elements)
 
     def bind_signals_and_slots(self):
@@ -100,10 +102,11 @@ class AppWindow(QWidget):
 
     def load_button_clicked(self):
         """ Load button click event handler """
-        categories = self.observation_repository.find_different_categories_num()
-        for category_id in categories:
-            category_observations = self.observation_repository.find_all_in_given_category(category_id)
-            self.canvas.draw_observations(category_observations, Color(category_id), True)
+        self._init_data_from_storage()
+
+    def clear_button_clicked(self):
+        self.canvas.clear()
+        self._init_data_from_storage()
 
     def knn_property_changed(self, name, value):
         value = int(value)
@@ -122,3 +125,9 @@ class AppWindow(QWidget):
                 value = Vote.REVERSE_DISTANCE_SQUARE
 
         Events.knn_property_changed.emit((name, value))
+
+    def _init_data_from_storage(self):
+        categories = self.observation_repository.find_different_categories_num()
+        for category_id in categories:
+            category_observations = self.observation_repository.find_all_in_given_category(category_id)
+            self.canvas.draw_observations(category_observations, Color(category_id), True)

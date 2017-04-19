@@ -2,7 +2,7 @@ from PyQt5.QtCore import pyqtSlot
 from PyQt5.QtGui import QImage, qRgb, QPainter, QPen, QMouseEvent
 from PyQt5.QtWidgets import QWidget
 
-from domain.shared.observation import Observation
+from domain.shared.observation import Observation, ObservationFactory
 from domain.shared.observation_container import ObservationContainer
 from infrastructure.events.events import Events
 from infrastructure.gui.color import Color
@@ -24,9 +24,16 @@ class AppCanvas(QWidget):
         painter = QPainter(self)
         painter.drawImage(0, 0, self.img)
 
+    def clear(self):
+        self.img.clear()
+        self.repaint()
+
     def mousePressEvent(self, event: QMouseEvent):
         """ Mouse press event handler """
-        Events.point_added.emit((event.x(), event.y()))
+        observation = ObservationFactory.create_observation(event.x(), event.y())
+        rescaled = observation.rescaled(self.width, self.height)
+        observation = observation.change_data(rescaled[0], rescaled[1])
+        Events.point_added.emit(observation)
 
     def draw_observations(self, values, color, circle_shape=False):
         if circle_shape is False:
@@ -42,7 +49,7 @@ class AppCanvas(QWidget):
 
         self.draw_observations([observation], Color(observation.category_id))
         self.draw_observations(neighbours, Color.WHITE, circle_shape=True)
-        print('PointClassifiedEvent reveived')
+        print('PointClassifiedEvent received')
 
 
 class AppCanvasImage(QImage):
@@ -51,9 +58,13 @@ class AppCanvasImage(QImage):
         super().__init__(width, height, format)
         self.width = width
         self.height = height
+        self.bg_color = bg_color
         self.painter = QPainter(self)
-        self.fill(bg_color)
-        self.draw_axes(width/2, height/2, Color.WHITE)
+        self.clear()
+
+    def clear(self):
+        self.fill(self.bg_color)
+        self.draw_axes(self.width / 2, self.height / 2, Color.WHITE)
 
     def draw_axes(self, x, y, color):
         painter = self.painter
@@ -74,16 +85,18 @@ class AppCanvasImage(QImage):
 
     def draw_points(self, points, color):
         for p in points:
-            self.draw_point(p.x, p.y, color)
+            scaled = p.scaled(self.width, self.height)
+            self.draw_point(scaled[0], scaled[1], color)
 
     def draw_circle_point(self, x, y, color):
         painter = self.painter
         pen = QPen(color)
-        pen.setWidth(5)
+        pen.setWidth(2)
         painter.setPen(pen)
 
         painter.drawEllipse(x, y, 5, 5)
 
     def draw_circle_points(self, points, color):
         for p in points:
-            self.draw_circle_point(p.x, p.y, color)
+            scaled = p.scaled(self.width, self.height)
+            self.draw_circle_point(scaled[0], scaled[1], color)

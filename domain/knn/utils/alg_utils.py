@@ -10,7 +10,7 @@ class AlghoritmUtils:
     @staticmethod
     def normalize_value(value, min, max):
         """ Returns normalized value """
-        return 1.0 * ((value - min) / (max - min))
+        return 1.0 * (value - min) / (max - min)
 
     @staticmethod
     def denormalize_observation(o, min_x, min_y, max_x, max_y):

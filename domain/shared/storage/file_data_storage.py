@@ -1,5 +1,6 @@
 import os
 
+from domain.knn.utils.alg_utils import AlghoritmUtils
 from domain.shared.observation import Observation, ObservationFactory
 from domain.shared.storage.data_storage import IDataStorage
 
@@ -14,6 +15,7 @@ class FileDataStorage(IDataStorage):
             raise FileNotFoundError('File ' + file + ' does not exist')
         self.storage = super()._storage
         self.load_storage(file)
+        self.normalize_observations()
 
     def load_storage(self, source):
         with open(source) as f:
@@ -50,3 +52,16 @@ class FileDataStorage(IDataStorage):
             d[key] += 1
 
         return d
+
+    def normalize_observations(self):
+        x_values = list(map(lambda o: o.x, self.storage))
+        y_values = list(map(lambda o: o.y, self.storage))
+        min_x = min(x_values)
+        min_y = min(y_values)
+        max_x = max(x_values)
+        max_y = max(y_values)
+
+        for i, observation in enumerate(self.storage):
+            self.storage[i] = AlghoritmUtils.normalize_observation(observation, min_x, min_y, max_x, max_y)
+
+        print('Data normalized')
