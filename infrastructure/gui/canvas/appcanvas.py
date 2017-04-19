@@ -49,10 +49,23 @@ class AppCanvasImage(QImage):
 
     def __init__(self, width, height, format, bg_color, parent=None):
         super().__init__(width, height, format)
+        self.width = width
+        self.height = height
+        self.painter = QPainter(self)
         self.fill(bg_color)
+        self.draw_axes(width/2, height/2, Color.WHITE)
+
+    def draw_axes(self, x, y, color):
+        painter = self.painter
+        pen = QPen(color.to_qcolor())
+        pen.setWidth(1)
+        painter.setPen(pen)
+
+        painter.drawLine(x, 0, x, self.height)
+        painter.drawLine(0, y, self.width, y)
 
     def draw_point(self, x, y, color):
-        painter = QPainter(self)
+        painter = self.painter
         pen = QPen(color)
         pen.setWidth(5)
         painter.setPen(pen)
@@ -64,7 +77,7 @@ class AppCanvasImage(QImage):
             self.draw_point(p.x, p.y, color)
 
     def draw_circle_point(self, x, y, color):
-        painter = QPainter(self)
+        painter = self.painter
         pen = QPen(color)
         pen.setWidth(5)
         painter.setPen(pen)
