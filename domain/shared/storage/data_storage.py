@@ -26,3 +26,10 @@ class IDataStorage(object):
     @abstractmethod
     def remove_value(self, value): raise NotImplementedError
 
+    """ Groups entries by category_id ({category_id: len of values}) """
+    @abstractmethod
+    def calculate_categories_countability(self): raise NotImplementedError
+
+    """ Normalizes data in data_storage """
+    @abstractmethod
+    def normalize_data(self): raise NotImplementedError

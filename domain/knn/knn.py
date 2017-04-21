@@ -6,6 +6,7 @@ from infrastructure.utils.collection_utils import CollectionUtils
 
 
 class KNNAlghoritm:
+    """ KNN alghoritm implementation """
 
     def __init__(self, data_storage):
         self.observation_repository = ObservationRepository(data_storage)
@@ -23,6 +24,7 @@ class KNNAlghoritm:
         self.vote = vote
 
     def classify(self, observation):
+        """ Methods that classify given observation """
         k_nearest_neighbours = self.find_k_nearest_neighbours(observation)
 
         if len(k_nearest_neighbours) != self.k:
@@ -91,8 +93,8 @@ class KNNAlghoritm:
 
     def find_dominating_category_in_neighbourhood(self, grouped_neighbours):
         """ Finds category, which has the biggest number of entries """
-        max_key = next (iter (grouped_neighbours))
-        max_value = next (iter (grouped_neighbours.values()))
+        max_key = next(iter(grouped_neighbours))
+        max_value = next(iter(grouped_neighbours.values()))
         for category_id in grouped_neighbours:
             if len(grouped_neighbours[category_id]) > len(max_value):
                 max_key = category_id

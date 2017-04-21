@@ -9,6 +9,7 @@ class Metric(Enum):
     TAXICAB = 2
 
     def polish_name(self):
+        """ Returns polish name of metric """
         if self.name is 'EUCLIDEAN':
             return 'euklidesowa'
         elif self.name is 'TAXICAB':

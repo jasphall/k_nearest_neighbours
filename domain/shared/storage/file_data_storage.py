@@ -15,7 +15,7 @@ class FileDataStorage(IDataStorage):
             raise FileNotFoundError('File ' + file + ' does not exist')
         self.storage = super()._storage
         self.load_storage(file)
-        self.normalize_observations()
+        self.normalize_data()
 
     def load_storage(self, source):
         with open(source) as f:
@@ -43,7 +43,6 @@ class FileDataStorage(IDataStorage):
         self.storage.clear()
 
     def calculate_categories_countability(self):
-        """ Groups entries by category_id ({category_id: len of values}) """
         d = {}
         for neighbour in self.get_values():
             key = neighbour.category_id
@@ -53,7 +52,7 @@ class FileDataStorage(IDataStorage):
 
         return d
 
-    def normalize_observations(self):
+    def normalize_data(self):
         x_values = list(map(lambda o: o.x, self.storage))
         y_values = list(map(lambda o: o.y, self.storage))
         min_x = min(x_values)

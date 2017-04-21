@@ -6,6 +6,7 @@ from infrastructure.events.event import Event
 
 
 class PointClassifiedEvent(Event):
+    """ Event emitted when classified point needs to be shown at canvas image """
     event = pyqtSignal(ObservationContainer)
 
     def emit(self, observation_container):

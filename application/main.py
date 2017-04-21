@@ -12,6 +12,7 @@ if __name__ == '__main__':
     app = QApplication(sys.argv)
 
     # SampleDataGenerator().generate_and_export()
+    # data_storage = FileDataStorage('../sample_data.txt')
     data_storage = FileDataStorage('../knn_demonstracyjny_uczacy.txt')
     observation_repository = ObservationRepository(data_storage)
     knn = KNNAlghoritm(data_storage)

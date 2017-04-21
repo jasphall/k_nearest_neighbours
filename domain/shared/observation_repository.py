@@ -14,10 +14,6 @@ class IObservationRepository(object):
     @abstractmethod
     def find_all_in_given_category(self, category_id): raise NotImplementedError
 
-    """ Find observations by variables values """
-    @abstractmethod
-    def find_by_values(self, x, y): raise NotImplementedError
-
 
 class ObservationRepository(IObservationRepository):
 
@@ -35,6 +31,3 @@ class ObservationRepository(IObservationRepository):
 
     def find_category_countability(self):
         return self.storage.calculate_categories_countability()
-
-    def find_by_values(self, x, y):
-        pass

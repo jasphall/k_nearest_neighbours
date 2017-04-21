@@ -14,6 +14,7 @@ class EventsHandler(QObject):
 
     @pyqtSlot(Observation)
     def point_added(self, observation):
+        """ PointAddedEvent handler """
         classified_category_id, neighbours = self.knn.classify(observation)
         observation.classify(classified_category_id)
 
@@ -21,6 +22,7 @@ class EventsHandler(QObject):
 
     @pyqtSlot(tuple)
     def knn_property_changed(self, data):
+        """" AlghoritmPropertyChangedEvent handler """
         if data[0] == 'k':
             print('Changed knn k parameter to: ' + str(data[1]))
             self.knn.setup_k(data[1])

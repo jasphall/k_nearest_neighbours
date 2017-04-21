@@ -99,16 +99,19 @@ class AppWindow(QWidget):
         Events.point_added.event.connect(self.events_handler.point_added)
         Events.point_classified.event.connect(self.canvas.point_classified_and_ready_to_draw)
         Events.knn_property_changed.event.connect(self.events_handler.knn_property_changed)
+        Events.clear_canvas.event.connect(self.clear_button_clicked)
 
     def load_button_clicked(self):
         """ Load button click event handler """
         self._init_data_from_storage()
 
     def clear_button_clicked(self):
+        """ Clear button click event handler """
         self.canvas.clear()
         self._init_data_from_storage()
 
     def knn_property_changed(self, name, value):
+        """ KNN parameter change event """
         value = int(value)
 
         if name == 'k':
@@ -127,6 +130,7 @@ class AppWindow(QWidget):
         Events.knn_property_changed.emit((name, value))
 
     def _init_data_from_storage(self):
+        """ Loads data from storage to canvas image """
         categories = self.observation_repository.find_different_categories_num()
         for category_id in categories:
             category_observations = self.observation_repository.find_all_in_given_category(category_id)
