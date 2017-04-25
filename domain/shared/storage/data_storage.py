@@ -5,6 +5,7 @@ class IDataStorage(object):
     """ Data storage interface """
 
     _storage = []
+    _classified_storage = []
 
     """ Clears storage list"""
     @abstractmethod

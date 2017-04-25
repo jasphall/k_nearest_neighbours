@@ -13,11 +13,12 @@ if __name__ == '__main__':
 
     # SampleDataGenerator().generate_and_export()
     # data_storage = FileDataStorage('../sample_data.txt')
-    data_storage = FileDataStorage('../knn_demonstracyjny_uczacy.txt')
+    # data_storage = FileDataStorage('../knn_demonstracyjny_uczacy.txt')
+    data_storage = FileDataStorage.EMPTY_STORAGE()
     observation_repository = ObservationRepository(data_storage)
     knn = KNNAlghoritm(data_storage)
     events_handler = EventsHandler(knn)
-    window = AppWindow(observation_repository, events_handler)
+    window = AppWindow(knn.observation_repository, events_handler)
     window.show()
 
     sys.exit(app.exec())

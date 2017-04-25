@@ -14,6 +14,9 @@ class KNNAlghoritm:
         self.metric = Metric.EUCLIDEAN
         self.vote = Vote.SIMPLE
 
+    def reload_data(self, data_storage):
+        self.observation_repository = self.observation_repository.reload(data_storage)
+
     def setup_k(self, k):
         self.k = k
 

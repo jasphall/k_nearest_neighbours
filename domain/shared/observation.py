@@ -39,6 +39,9 @@ class Observation(object):
 
         return rescaled_x, rescaled_y
 
+    def save_format(self):
+        return str(self.x) + ',' + str(self.y) + ',' + str(self.category_id)
+
     def __repr__(self):
         return 'Observation [' + str(self.x) + ', ' + str(self.y) + '][kategoria ' + str(self.category_id) + ']'
 

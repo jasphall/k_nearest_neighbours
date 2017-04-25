@@ -14,11 +14,18 @@ class IObservationRepository(object):
     @abstractmethod
     def find_all_in_given_category(self, category_id): raise NotImplementedError
 
+    @abstractmethod
+    def reload(self, storage): raise NotImplementedError
+
 
 class ObservationRepository(IObservationRepository):
 
     def __init__(self, storage):
         self.storage = storage
+
+    def reload(self, storage):
+        self.storage = storage
+        return self
 
     def find_all(self):
         return self.storage.get_values()

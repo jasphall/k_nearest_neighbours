@@ -2,6 +2,7 @@ from PyQt5.QtCore import pyqtSlot, QObject
 
 from domain.shared.observation import ObservationFactory, Observation
 from domain.shared.observation_container import ObservationContainer
+from domain.shared.storage.file_data_storage import FileDataStorage
 from infrastructure.events.events import Events
 
 
@@ -18,6 +19,7 @@ class EventsHandler(QObject):
         classified_category_id, neighbours = self.knn.classify(observation)
         observation.classify(classified_category_id)
 
+        self.knn.observation_repository.storage.add_classified_value(observation)
         Events.point_classified.emit(ObservationContainer(observation, neighbours))
 
     @pyqtSlot(tuple)
@@ -33,3 +35,7 @@ class EventsHandler(QObject):
             print('Changed knn vote parameter to: ' + str(data[1]))
             self.knn.setup_vote(data[1])
 
+    @pyqtSlot(str)
+    def data_storage_loaded(self, name):
+        data_storage = FileDataStorage(name)
+        self.knn.reload_data(data_storage)

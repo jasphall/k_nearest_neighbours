@@ -10,12 +10,22 @@ class FileDataStorage(IDataStorage):
 
     COMMA_SEPARATOR = ','
 
-    def __init__(self, file):
-        if not os.path.exists(file):
+    def __init__(self, file=None):
+        if file is None:
+            self.storage = []
+            self.classified_storage = []
+        elif not os.path.exists(file):
             raise FileNotFoundError('File ' + file + ' does not exist')
-        self.storage = super()._storage
-        self.load_storage(file)
-        self.normalize_data()
+        else:
+            self.filename = file
+            self.storage = super()._storage
+            self.load_storage(file)
+            self.normalize_data()
+            self.classified_storage = super()._classified_storage
+
+    @staticmethod
+    def EMPTY_STORAGE():
+        return FileDataStorage(None)
 
     def load_storage(self, source):
         with open(source) as f:
@@ -31,16 +41,28 @@ class FileDataStorage(IDataStorage):
     def get_values(self):
         return tuple(self.storage)
 
+    def get_classified_values(self):
+        return tuple(self.classified_storage)
+
     def add_value(self, value):
         if not isinstance(value, Observation):
             raise ValueError('This container stores only observations')
         self.storage.append(value)
+
+    def add_classified_value(self, value):
+        if not isinstance(value, Observation):
+            raise ValueError('This container stores only observations')
+        self.clear_classified_storage()
+        self.classified_storage.append(value)
 
     def remove_value(self, value):
         self.storage.remove(value)
 
     def clear_storage(self):
         self.storage.clear()
+
+    def clear_classified_storage(self):
+        self.classified_storage.clear()
 
     def calculate_categories_countability(self):
         d = {}
